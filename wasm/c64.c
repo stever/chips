@@ -16,7 +16,7 @@
 void audio_callback_fn(const float* samples, int num_samples, void* user_data) {
 }
 
-c64_t* c64_machine_init(char* bios) {
+c64_t* machine_init(char* bios) {
     c64_desc_t desc;
     c64_t* sys = (c64_t*) malloc(sizeof(c64_t));
     memset(sys, 0, sizeof(c64_t));
@@ -35,11 +35,50 @@ c64_t* c64_machine_init(char* bios) {
     return sys;
 }
 
-void* c64_get_pixel_buffer(const c64_t* sys) {
+void machine_reset(c64_t* sys) {
+    c64_reset(sys);
+}
+
+void machine_tick(c64_t* sys) {
+    c64_tick(sys);
+}
+
+void* machine_get_pixel_buffer(const c64_t* sys) {
     return sys->pixel_buffer;
 }
 
-float* c64_get_sample_buffer(const c64_t* sys) {
+float* machine_get_sample_buffer(const c64_t* sys) {
     return sys->sample_buffer;
 }
 
+uint8_t machine_mem_read(const c64_t* sys, uint16_t address) {
+    return 0; //TODO
+}
+
+uint8_t machine_mem_write(const c64_t* sys, uint16_t address, uint8_t value) {
+    return 0; //TODO
+}
+
+int machine_get_state_size() {
+    return sizeof(c64_t);
+}
+
+void machine_save_state(const c64_t* sys, void* state) {
+    memcpy(state, sys, sizeof(c64_t));
+}
+
+void machine_load_state(c64_t* sys, const void* state) {
+    memcpy(sys, state, sizeof(c64_t));
+}
+
+void machine_key_down(c64_t* sys, int key_code) {
+    c64_key_down(sys, key_code);
+}
+
+void machine_key_up(c64_t* sys, int key_code) {
+    c64_key_up(sys, key_code);
+}
+
+void machine_load_rom(c64_t* sys, const uint8_t* ptr, int num_bytes) {
+    c64_quickload(sys, ptr, num_bytes);
+}
