@@ -999,7 +999,7 @@ static void _c64_init_key_map(c64_t* sys) {
         "#wa$zse "
         "%rd&cftx"
         "'yg(bhuv"
-        ")ij0mkon"
+        ")ij mkon"
         " pl >[ <"
         "$ ]    ?"
         "!  \"  q ";

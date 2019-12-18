@@ -13,7 +13,15 @@
 #include "chips/clk.h"
 #include "systems/c64.h"
 
+#define MAX_SAMPLES 4096
+float sample_buffer[MAX_SAMPLES];
+unsigned int sample_count = 0;
+
 void audio_callback_fn(const float* samples, int num_samples, void* user_data) {
+    if (sample_count + num_samples < MAX_SAMPLES) {
+        memcpy(sample_buffer+sample_count, samples, num_samples*sizeof(float));
+        sample_count += num_samples;
+    }
 }
 
 c64_t* machine_init(char* bios) {
@@ -43,12 +51,22 @@ void machine_tick(c64_t* sys) {
     c64_tick(sys);
 }
 
+void machine_exec(c64_t* sys, uint32_t micro_seconds) {
+    c64_exec(sys, micro_seconds);
+}
+
 void* machine_get_pixel_buffer(const c64_t* sys) {
     return sys->pixel_buffer;
 }
 
-float* machine_get_sample_buffer(const c64_t* sys) {
-    return sys->sample_buffer;
+float* machine_get_sample_buffer() {
+    return sample_buffer;
+}
+
+unsigned int machine_get_sample_count() {
+    unsigned int n = sample_count;
+    sample_count = 0;
+    return n;
 }
 
 uint8_t machine_mem_read(c64_t* sys, uint16_t address) {
@@ -81,4 +99,16 @@ void machine_key_up(c64_t* sys, int key_code) {
 
 void machine_load_rom(c64_t* sys, const uint8_t* ptr, int num_bytes) {
     c64_quickload(sys, ptr, num_bytes);
+}
+
+unsigned int machine_cpu_get_pc(c64_t* sys) {
+    return sys->cpu.PC;
+}
+
+unsigned int machine_cpu_get_sp(c64_t* sys) {
+    return sys->cpu.S;
+}
+
+bool machine_cpu_is_stable(c64_t* sys) {
+    return sys->cpu.PINS & M6502_SYNC;
 }

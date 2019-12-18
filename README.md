@@ -12,6 +12,12 @@ The example emulators, compiled to WebAssembly: https://floooh.github.io/tiny8bi
 
 For schematics, manuals and research material, see: https://github.com/floooh/emu-info
 
+## WebAssembly support
+
+@sehugg added WASM support for [8bitworkshop](https://8bitworkshop.com/).
+You'll need to install [EMSDK](https://github.com/emscripten-core/emsdk)
+first. Then type `make`.
+
 ## What's New
 
 * **13-Dec-2019**: The new 'cycle-stepped' 6502/6510 emulator has been merged
