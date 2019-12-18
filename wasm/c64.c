@@ -51,12 +51,12 @@ float* machine_get_sample_buffer(const c64_t* sys) {
     return sys->sample_buffer;
 }
 
-uint8_t machine_mem_read(const c64_t* sys, uint16_t address) {
-    return 0; //TODO
+uint8_t machine_mem_read(c64_t* sys, uint16_t address) {
+    return mem_rd(&sys->mem_cpu, address);
 }
-
-uint8_t machine_mem_write(const c64_t* sys, uint16_t address, uint8_t value) {
-    return 0; //TODO
+ 
+void machine_mem_write(c64_t* sys, uint16_t address, uint8_t value) {
+    mem_wr(&sys->mem_cpu, address, value);
 }
 
 int machine_get_state_size() {
