@@ -16,6 +16,7 @@
 #define MAX_SAMPLES 4096
 float sample_buffer[MAX_SAMPLES];
 unsigned int sample_count = 0;
+char* bios_array = 0;
 
 void audio_callback_fn(const float* samples, int num_samples, void* user_data) {
     if (sample_count + num_samples < MAX_SAMPLES) {
@@ -24,22 +25,27 @@ void audio_callback_fn(const float* samples, int num_samples, void* user_data) {
     }
 }
 
-c64_t* machine_init(char* bios) {
+void machine_hardreset(c64_t* sys) {
     c64_desc_t desc;
-    c64_t* sys = (c64_t*) malloc(sizeof(c64_t));
     memset(sys, 0, sizeof(c64_t));
     memset(&desc, 0, sizeof(c64_desc_t));
     desc.pixel_buffer_size = c64_max_display_size();
     desc.pixel_buffer = malloc(desc.pixel_buffer_size);
-    desc.rom_basic = &bios[0x0];
-    desc.rom_char = &bios[0x2000];
-    desc.rom_kernal = &bios[0x3000];
+    desc.rom_basic = &bios_array[0x0];
+    desc.rom_char = &bios_array[0x2000];
+    desc.rom_kernal = &bios_array[0x3000];
     desc.rom_basic_size = 0x2000;
     desc.rom_char_size = 0x1000;
     desc.rom_kernal_size = 0x2000;
     desc.audio_cb = audio_callback_fn;
     c64_init(sys, &desc);
     sys->pixel_buffer = desc.pixel_buffer;
+}
+
+c64_t* machine_init(char* bios) {
+    c64_t* sys = (c64_t*) malloc(sizeof(c64_t));
+    bios_array = bios;
+    machine_hardreset(sys);
     return sys;
 }
 
