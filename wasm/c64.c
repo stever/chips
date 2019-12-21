@@ -18,6 +18,14 @@ float sample_buffer[MAX_SAMPLES];
 unsigned int sample_count = 0;
 char* bios_array = 0;
 
+typedef struct {
+    uint8_t kbd_joy1_mask;      /* current joystick-1 state from keyboard-joystick emulation */
+    uint8_t kbd_joy2_mask;      /* current joystick-2 state from keyboard-joystick emulation */
+    uint8_t joy_joy1_mask;      /* current joystick-1 state from c64_joystick() */
+    uint8_t joy_joy2_mask;      /* current joystick-2 state from c64_joystick() */
+    kbd_t kbd;                  /* keyboard matrix state */
+} C64ControlsState;
+
 void audio_callback_fn(const float* samples, int num_samples, void* user_data) {
     if (sample_count + num_samples < MAX_SAMPLES) {
         memcpy(sample_buffer+sample_count, samples, num_samples*sizeof(float));
@@ -87,12 +95,44 @@ int machine_get_state_size() {
     return sizeof(c64_t);
 }
 
-void machine_save_state(const c64_t* sys, void* state) {
+int machine_get_cpu_state_size() {
+    return sizeof(m6502_t);
+}
+
+int machine_get_controls_state_size() {
+    return sizeof(C64ControlsState);
+}
+
+void machine_save_state(const c64_t* sys, c64_t* state) {
     memcpy(state, sys, sizeof(c64_t));
 }
 
-void machine_load_state(c64_t* sys, const void* state) {
+void machine_load_state(c64_t* sys, const c64_t* state) {
     memcpy(sys, state, sizeof(c64_t));
+}
+
+void machine_save_cpu_state(const c64_t* sys, m6502_t* state) {
+    memcpy(state, &sys->cpu, sizeof(m6502_t));
+}
+
+void machine_load_cpu_state(c64_t* sys, const m6502_t* state) {
+    memcpy(&sys->cpu, state, sizeof(m6502_t));
+}
+
+void machine_save_controls_state(const c64_t* sys, C64ControlsState* state) {
+    state->kbd_joy1_mask = sys->kbd_joy1_mask;
+    state->kbd_joy2_mask = sys->kbd_joy2_mask;
+    state->joy_joy1_mask = sys->joy_joy1_mask;
+    state->joy_joy2_mask = sys->joy_joy2_mask;
+    state->kbd = sys->kbd;
+}
+
+void machine_load_controls_state(c64_t* sys, const C64ControlsState* state) {
+    sys->kbd_joy1_mask = state->kbd_joy1_mask;
+    sys->kbd_joy2_mask = state->kbd_joy2_mask;
+    sys->joy_joy1_mask = state->joy_joy1_mask;
+    sys->joy_joy2_mask = state->joy_joy2_mask;
+    sys->kbd = state->kbd;
 }
 
 void machine_key_down(c64_t* sys, int key_code) {
