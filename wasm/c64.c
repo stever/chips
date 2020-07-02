@@ -46,6 +46,7 @@ void machine_hardreset(c64_t* sys) {
     desc.rom_char_size = 0x1000;
     desc.rom_kernal_size = 0x2000;
     desc.audio_cb = audio_callback_fn;
+    desc.audio_num_samples = C64_MAX_AUDIO_SAMPLES;
     c64_init(sys, &desc);
     sys->pixel_buffer = desc.pixel_buffer;
 }
