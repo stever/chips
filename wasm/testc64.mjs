@@ -40,5 +40,5 @@ const pixels = new Uint8Array(
   c64.c64_max_display_size()
 );
 
-fs.writeFileSync('test.rgba', pixels);
+fs.writeFileSync('testc64.rgba', pixels);
 

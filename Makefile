@@ -1,12 +1,13 @@
 
 CLANG="$(EMSDK)/upstream/bin/clang"
 
-test: wasm/c64.wasm
-	node --experimental-modules --experimental-wasm-modules wasm/test.mjs
-#	convert -size 392x272 -depth 8 RGBA:test.rgba test.png
+test: wasm/c64.wasm wasm/zx.wasm
+	node --experimental-modules --experimental-wasm-modules wasm/testc64.mjs
+	#convert -size 392x272 -depth 8 RGBA:testc64.rgba testc64.png
+	node --experimental-modules --experimental-wasm-modules wasm/testzx.mjs
 
 # from https://dassur.ma/things/c-to-webassembly/
-wasm/c64.wasm: wasm/c64.c
+wasm/%.wasm: wasm/%.c
 	$(CLANG) -v \
 	-I. \
 	-Iwasm \
