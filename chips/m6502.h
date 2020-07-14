@@ -718,7 +718,7 @@ uint64_t m6502_tick(m6502_t* c, uint64_t pins) {
         case (0x00<<3)|3: _SAD(0x0100|c->S--,c->P|M6502_XF);if(c->brk_flags&M6502_BRK_RESET){c->AD=0xFFFC;}else{_WR();if(c->brk_flags&M6502_BRK_NMI){c->AD=0xFFFA;}else{c->AD=0xFFFE;}}break;
         case (0x00<<3)|4: _SA(c->AD++);c->P|=(M6502_IF|M6502_BF);c->brk_flags=0; /* RES/NMI hijacking */break;
         case (0x00<<3)|5: _SA(c->AD);c->AD=_GD(); /* NMI "half-hijacking" not possible */break;
-        case (0x00<<3)|6: c->PC=(_GD()<<8)|c->AD;_FETCH();break;
+        case (0x00<<3)|6: c->PC=(_GD()<<8)|c->AD;_FETCH();logStackPush(c->S);break;
         case (0x00<<3)|7: assert(false);break;
     /* ORA (zp,X) */
         case (0x01<<3)|0: _SA(c->PC++);break;
@@ -1005,7 +1005,7 @@ uint64_t m6502_tick(m6502_t* c, uint64_t pins) {
         case (0x20<<3)|2: _SAD(0x0100|c->S--,c->PC>>8);_WR();break;
         case (0x20<<3)|3: _SAD(0x0100|c->S--,c->PC);_WR();break;
         case (0x20<<3)|4: _SA(c->PC);break;
-        case (0x20<<3)|5: c->PC=(_GD()<<8)|c->AD;_FETCH();break;
+        case (0x20<<3)|5: c->PC=(_GD()<<8)|c->AD;_FETCH();logStackPush(c->S);break;
         case (0x20<<3)|6: assert(false);break;
         case (0x20<<3)|7: assert(false);break;
     /* AND (zp,X) */
@@ -1293,7 +1293,7 @@ uint64_t m6502_tick(m6502_t* c, uint64_t pins) {
         case (0x40<<3)|2: _SA(0x0100|c->S++);break;
         case (0x40<<3)|3: _SA(0x0100|c->S++);c->P=(_GD()|M6502_BF)&~M6502_XF;break;
         case (0x40<<3)|4: _SA(0x0100|c->S);c->AD=_GD();break;
-        case (0x40<<3)|5: c->PC=(_GD()<<8)|c->AD;_FETCH();break;
+        case (0x40<<3)|5: c->PC=(_GD()<<8)|c->AD;_FETCH();logStackPop(c->S);break;
         case (0x40<<3)|6: assert(false);break;
         case (0x40<<3)|7: assert(false);break;
     /* EOR (zp,X) */
@@ -1581,7 +1581,7 @@ uint64_t m6502_tick(m6502_t* c, uint64_t pins) {
         case (0x60<<3)|2: _SA(0x0100|c->S++);break;
         case (0x60<<3)|3: _SA(0x0100|c->S);c->AD=_GD();break;
         case (0x60<<3)|4: c->PC=(_GD()<<8)|c->AD;_SA(c->PC++);break;
-        case (0x60<<3)|5: _FETCH();break;
+        case (0x60<<3)|5: _FETCH();logStackPop(c->S);break;
         case (0x60<<3)|6: assert(false);break;
         case (0x60<<3)|7: assert(false);break;
     /* ADC (zp,X) */

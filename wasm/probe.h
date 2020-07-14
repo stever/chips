@@ -89,4 +89,12 @@ void logNewFrame() {
     logProbe(OP_FRAME);
 }
 
+void logStackPush(uint16_t sp) {
+    logProbe(OP_SP_PUSH | sp);
+}
+
+void logStackPop(uint16_t sp) {
+    logProbe(OP_SP_POP | sp);
+}
+
 #endif
