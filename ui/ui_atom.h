@@ -173,12 +173,14 @@ static void _ui_atom_draw_menu(ui_atom_t* ui, double time_ms) {
 
 static uint8_t _ui_atom_mem_read(int layer, uint16_t addr, void* user_data) {
     CHIPS_ASSERT(user_data);
+    (void)layer;
     atom_t* atom = (atom_t*) user_data;
     return mem_rd(&atom->mem, addr);
 }
 
 static void _ui_atom_mem_write(int layer, uint16_t addr, uint8_t data, void* user_data) {
     CHIPS_ASSERT(user_data);
+    (void)layer;
     atom_t* atom = (atom_t*) user_data;
     mem_wr(&atom->mem, addr, data);
 }
@@ -197,7 +199,7 @@ static const ui_chip_pin_t _ui_atom_cpu_pins[] = {
     { "IRQ",    11,     M6502_IRQ },
     { "NMI",    12,     M6502_NMI },
     { "RDY",    13,     M6502_RDY },
-    { "RES",    15,     M6502_RES },
+    { "RES",    14,     M6502_RES },
     { "A0",     16,     M6502_A0 },
     { "A1",     17,     M6502_A1 },
     { "A2",     18,     M6502_A2 },
@@ -366,6 +368,7 @@ void ui_atom_init(ui_atom_t* ui, const ui_atom_desc_t* ui_desc) {
         ui_m6522_desc_t desc = {0};
         desc.title = "MOS 6522";
         desc.via = &ui->atom->via;
+        desc.regs_base = 0xB800;
         desc.x = x;
         desc.y = y;
         UI_CHIP_INIT_DESC(&desc.chip_desc, "6522", 40, _ui_atom_via_pins);
@@ -502,11 +505,9 @@ void ui_atom_exec(ui_atom_t* ui, uint32_t frame_time_us) {
     atom_t* atom = ui->atom;
     for (uint32_t i = 0; (i < ticks_to_run) && (!ui->dbg.dbg.stopped); i++) {
         atom_tick(ui->atom);
-        if (atom->pins & M6502_SYNC) {
-            ui_dbg_after_instr(&ui->dbg, atom->pins, (uint32_t)atom->cpu.ticks);
-        }
+        ui_dbg_tick(&ui->dbg, atom->pins);
     }
-    kbd_update(&ui->atom->kbd);
+    kbd_update(&ui->atom->kbd, frame_time_us);
 }
 
 #ifdef __clang__

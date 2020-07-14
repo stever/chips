@@ -424,10 +424,12 @@ int bombjack_display_size(void) {
 }
 
 int bombjack_display_width(bombjack_t* sys) {
+    (void)sys;
     return _BOMBJACK_DISPLAY_WIDTH;
 }
 
 int bombjack_display_height(bombjack_t* sys) {
+    (void)sys;
     return _BOMBJACK_DISPLAY_HEIGHT;
 }
 
@@ -693,7 +695,9 @@ static uint64_t _bombjack_tick_soundboard(int num_ticks, uint64_t pins, void* us
                           sys->soundboard.psg[2].sample;
                 sys->audio.sample_buffer[sys->audio.sample_pos++] = s * sys->audio.volume;
                 if (sys->audio.sample_pos == sys->audio.num_samples) {
-                    saudio_push(sys->audio.sample_buffer, sys->audio.num_samples);
+                    if (sys->audio.callback) {
+                        sys->audio.callback(sys->audio.sample_buffer, sys->audio.num_samples, sys->user_data);
+                    }
                     sys->audio.sample_pos = 0;
                 }
             }

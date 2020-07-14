@@ -308,10 +308,12 @@ int z1013_max_display_size(void) {
 }
 
 int z1013_display_width(z1013_t* sys) {
+    (void)sys;
     return _Z1013_DISPLAY_WIDTH;
 }
 
 int z1013_display_height(z1013_t* sys) {
+    (void)sys;
     return _Z1013_DISPLAY_HEIGHT;
 }
 
@@ -328,7 +330,7 @@ void z1013_exec(z1013_t* sys, uint32_t micro_seconds) {
     uint32_t ticks_to_run = clk_ticks_to_run(&sys->clk, micro_seconds);
     uint32_t ticks_executed = z80_exec(&sys->cpu, ticks_to_run);
     clk_ticks_executed(&sys->clk, ticks_executed);
-    kbd_update(&sys->kbd);
+    kbd_update(&sys->kbd, micro_seconds);
     _z1013_decode_vidmem(sys);
 }
 
@@ -343,6 +345,7 @@ void z1013_key_up(z1013_t* sys, int key_code) {
 }
 
 static uint64_t _z1013_tick(int num_ticks, uint64_t pins, void* user_data) {
+    (void)num_ticks;
     z1013_t* sys = (z1013_t*) user_data;
     if (pins & Z80_MREQ) {
         /* a memory request */

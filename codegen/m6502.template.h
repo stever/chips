@@ -296,7 +296,6 @@ typedef struct {
     uint16_t nmi_pip;
     uint8_t brk_flags;  /* M6502_BRK_* */
     uint8_t bcd_enabled;
-    uint64_t ticks;     /* tick counter (only for inspection) */
     /* 6510 IO port state */
     void* user_data;
     m6510_in_t in_cb;
@@ -339,6 +338,8 @@ uint16_t m6502_pc(m6502_t* cpu);
 #define M6502_GET_DATA(p) ((uint8_t)((p&0xFF0000ULL)>>16))
 /* merge 8-bit data bus value into 64-bit pins */
 #define M6502_SET_DATA(p,d) {p=(((p)&~0xFF0000ULL)|(((d)<<16)&0xFF0000ULL));}
+/* copy data bus value from other pin mask */
+#define M6502_COPY_DATA(p0,p1) (((p0)&~0xFF0000ULL)|((p1)&0xFF0000ULL))
 /* return a pin mask with control-pins, address and data bus */
 #define M6502_MAKE_PINS(ctrl, addr, data) ((ctrl)|(((data)<<16)&0xFF0000ULL)|((addr)&0xFFFFULL))
 /* set the port bits on the 64-bit pin mask */
@@ -648,7 +649,6 @@ uint64_t m6510_iorq(m6502_t* c, uint64_t pins) {
 #endif
 
 uint64_t m6502_tick(m6502_t* c, uint64_t pins) {
-    c->ticks++;
     if (pins & (M6502_SYNC|M6502_IRQ|M6502_NMI|M6502_RDY|M6502_RES)) {
         // interrupt detection also works in RDY phases, but only NMI is "sticky"
         
