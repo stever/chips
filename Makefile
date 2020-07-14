@@ -7,7 +7,7 @@ test: wasm/c64.wasm wasm/zx.wasm
 	node --experimental-modules --experimental-wasm-modules wasm/testzx.mjs
 
 # from https://dassur.ma/things/c-to-webassembly/
-wasm/%.wasm: wasm/%.c
+wasm/%.wasm: wasm/%.c systems/*.h chips/*.h wasm/probe.h
 	$(CLANG) -v \
 	-I. \
 	-Iwasm \

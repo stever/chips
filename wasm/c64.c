@@ -1,7 +1,10 @@
 
 #include "malloc.h"
+#include <stdint.h>
 
 #define CHIPS_IMPL
+
+#include "probe.h"
 
 #include "chips/m6502.h"
 #include "chips/m6526.h"
@@ -11,6 +14,9 @@
 #include "chips/kbd.h"
 #include "chips/mem.h"
 #include "chips/clk.h"
+#include "systems/c1530.h"
+#include "chips/m6522.h"
+#include "systems/c1541.h"
 #include "systems/c64.h"
 
 #define MAX_SAMPLES 4096
@@ -60,6 +66,10 @@ c64_t* machine_init(char* bios) {
 
 void machine_reset(c64_t* sys) {
     c64_reset(sys);
+}
+
+void machine_start_frame(c64_t* sys) {
+    kbd_update(&sys->kbd, 1000000/50);
 }
 
 void machine_tick(c64_t* sys) {
@@ -159,3 +169,8 @@ unsigned int machine_cpu_get_sp(c64_t* sys) {
 bool machine_cpu_is_stable(c64_t* sys) {
     return sys->cpu.PINS & M6502_SYNC;
 }
+
+int machine_get_raster_line(c64_t* sys) {
+    return sys->vic.rs.v_count;
+}
+

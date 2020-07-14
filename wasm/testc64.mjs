@@ -42,3 +42,4 @@ const pixels = new Uint8Array(
 
 fs.writeFileSync('testc64.rgba', pixels);
 
+console.log('probe', c64.machine_get_probe_buffer_size());
