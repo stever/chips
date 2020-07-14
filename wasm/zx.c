@@ -3,6 +3,8 @@
 
 #define CHIPS_IMPL
 
+#include "probe.h"
+
 #include "chips/z80.h"
 #include "chips/beeper.h"
 #include "chips/ay38910.h"
@@ -52,6 +54,10 @@ zx_t* machine_init(char* bios) {
 
 void machine_reset(zx_t* sys) {
     zx_reset(sys);
+}
+
+void machine_start_frame(zx_t* sys) {
+    kbd_update(&sys->kbd, 1000000/50);
 }
 
 void machine_tick(zx_t* sys) {

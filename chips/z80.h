@@ -848,6 +848,7 @@ uint32_t z80_exec(z80_t* cpu, uint32_t num_ticks) {
     uint16_t pc = _G_PC();
     uint64_t pre_pins = pins;
     do {
+        logExec(pc);
         /* fetch next opcode byte */
         _FETCH(op)
         /* special case ED-prefixed instruction: cancel effect of DD/FD prefix */

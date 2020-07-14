@@ -859,6 +859,10 @@ static uint64_t _c64_tick(c64_t* sys, uint64_t pins) {
         }
     }
     logClocks(1);
+    if (sys->vic.rs.h_count == 0) {
+        logNewScanline();
+        if (sys->vic.rs.v_count == 0) logNewFrame();
+    }
     return pins;
 }
 

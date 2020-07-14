@@ -1,6 +1,5 @@
 
 #include "malloc.h"
-#include <stdint.h>
 
 #define CHIPS_IMPL
 
@@ -173,4 +172,3 @@ bool machine_cpu_is_stable(c64_t* sys) {
 int machine_get_raster_line(c64_t* sys) {
     return sys->vic.rs.v_count;
 }
-

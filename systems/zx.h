@@ -476,6 +476,7 @@ static uint64_t _zx_tick(int num_ticks, uint64_t pins, void* user_data) {
     /* video decoding and vblank interrupt */
     sys->scanline_counter -= num_ticks;
     if (sys->scanline_counter <= 0) {
+        logNewScanline();
         sys->scanline_counter += sys->scanline_period;
         /* decode next video scanline */
         if (_zx_decode_scanline(sys)) {
@@ -517,15 +518,18 @@ static uint64_t _zx_tick(int num_ticks, uint64_t pins, void* user_data) {
         const uint16_t addr = Z80_GET_ADDR(pins);
         if (pins & Z80_RD) {
             Z80_SET_DATA(pins, mem_rd(&sys->mem, addr));
+            logRead(addr, Z80_GET_DATA(pins));
         }
         else if (pins & Z80_WR) {
             mem_wr(&sys->mem, addr, Z80_GET_DATA(pins));
+            logWrite(addr, Z80_GET_DATA(pins));
         }
     }
     else if (pins & Z80_IORQ) {
         /* an IO request machine cycle
             see http://problemkaputt.de/zxdocs.htm#zxspectrum for address decoding
         */
+        // TODO: probe i/o
         if (pins & Z80_RD) {
             /* an IO read
                 FIXME: reading from port xxFF should return 'current VRAM data'
@@ -555,6 +559,7 @@ static uint64_t _zx_tick(int num_ticks, uint64_t pins, void* user_data) {
                     pins = ay38910_iorq(&sys->ay, AY38910_BC1|pins) & Z80_PIN_MASK;
                 }
             }
+            logIORead(Z80_GET_ADDR(pins), Z80_GET_DATA(pins));
         }
         else if (pins & Z80_WR) {
             // an IO write
@@ -609,8 +614,10 @@ static uint64_t _zx_tick(int num_ticks, uint64_t pins, void* user_data) {
                     ay38910_iorq(&sys->ay, AY38910_BDIR|pins);
                 }
             }
+            logIOWrite(Z80_GET_ADDR(pins), Z80_GET_DATA(pins));
         }
     }
+    logClocks(num_ticks);
     return pins;
 }
 

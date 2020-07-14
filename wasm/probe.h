@@ -1,6 +1,8 @@
 #ifndef _PROBE_H
 #define _PROBE_H
 
+#include <stdint.h>
+
 #define OP_CLOCKS	0x00000000
 #define OP_EXECUTE	0x01000000
 #define OP_HAS_VALUE 	0x10000000
@@ -42,6 +44,7 @@ inline void logProbe(uint32_t x) {
 
 void logClocks(uint16_t clocks) {
     if (clocks) {
+        //TODO: coalesce
         logProbe(OP_CLOCKS | clocks);
     }
 }
@@ -56,6 +59,34 @@ void logRead(uint16_t addr, uint8_t data) {
 
 void logWrite(uint16_t addr, uint8_t data) {
     logProbe(OP_MEM_WRITE | addr | (data<<16));
+}
+
+void logIORead(uint16_t addr, uint8_t data) {
+    logProbe(OP_IO_READ | addr | (data<<16));
+}
+
+void logIOWrite(uint16_t addr, uint8_t data) {
+    logProbe(OP_IO_WRITE | addr | (data<<16));
+}
+
+void logVRAMRead(uint16_t addr, uint8_t data) {
+    logProbe(OP_VRAM_READ | addr | (data<<16));
+}
+
+void logVRAMWrite(uint16_t addr, uint8_t data) {
+    logProbe(OP_VRAM_WRITE | addr | (data<<16));
+}
+
+void logInterrupt(uint16_t addr) {
+    logProbe(OP_INTERRUPT | addr);
+}
+
+void logNewScanline() {
+    logProbe(OP_SCANLINE);
+}
+
+void logNewFrame() {
+    logProbe(OP_FRAME);
 }
 
 #endif
