@@ -715,8 +715,7 @@ static inline void _namco_8x4(
 {
     uint32_t xor_x = flip_x ? 3 : 0;
     uint32_t xor_y = flip_y ? 7 : 0;
-    int tile_index = char_code*tile_stride + tile_offset;
-    for (uint32_t yy = 0; yy < 8; yy++, tile_index++) {
+    for (uint32_t yy = 0; yy < 8; yy++) {
         uint32_t y = py + (yy ^ xor_y);
         if (y >= NAMCO_DISPLAY_HEIGHT) {
             continue;
@@ -1006,12 +1005,12 @@ static void _namco_sound_tick(namco_t* sys, int num_ticks) {
         float sm = 0.0f;
         for (int i = 0; i < 3; i++) {
             if (snd->voice[i].sample_div > 0.0f) {
-                snd->voice[i].sample /= snd->voice[i].sample_div;
-                snd->voice[i].sample_div = 128.0f;
-                sm += snd->voice[i].sample;
+                sm += snd->voice[i].sample / snd->voice[i].sample_div;
+                snd->voice[i].sample = 0.0f;
+                snd->voice[i].sample_div = 0.0f;
             }
         }
-        sm *= snd->volume;// * 0.33333f;
+        sm *= snd->volume * 0.33333f;
         snd->sample_buffer[snd->sample_pos++] = sm;
         if (snd->sample_pos == snd->num_samples) {
             if (snd->callback) {
