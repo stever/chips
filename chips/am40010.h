@@ -746,18 +746,20 @@ static void _am40010_decode_video(am40010_t* ga, uint64_t crtc_pins) {
         int dst_y = ga->crt.pos_y;
         bool black = ga->video.sync;
         uint32_t* dst = &ga->rgba8_buffer[dst_x + dst_y * AM40010_DISPLAY_WIDTH];
-        if (crtc_pins & AM40010_DE) {
-            _am40010_decode_pixels(ga, dst, crtc_pins);
-        }
-        else if (black) {
-            for (int i = 0; i < 16; i++) {
-                *dst++ = 0xFF000000;
+        if (dst_x >= 0 && dst_x < AM40010_DISPLAY_WIDTH && dst_y >= 0 && dst_y < AM40010_DISPLAY_HEIGHT) {
+            if (crtc_pins & AM40010_DE) {
+                _am40010_decode_pixels(ga, dst, crtc_pins);
             }
-        }
-        else {
-            uint32_t brd = ga->colors.border_rgba8;
-            for (int i = 0; i < 16; i++) {
-                *dst++ = brd;
+            else if (black) {
+                for (int i = 0; i < 16; i++) {
+                    *dst++ = 0xFF000000;
+                }
+            }
+            else {
+                uint32_t brd = ga->colors.border_rgba8;
+                for (int i = 0; i < 16; i++) {
+                    *dst++ = brd;
+                }
             }
         }
     }
