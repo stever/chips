@@ -479,17 +479,17 @@ static uint64_t _cpc_tick(int num_ticks, uint64_t cpu_pins, void* user_data) {
         /* CPU MEMORY REQUEST */
         const uint16_t addr = Z80_GET_ADDR(cpu_pins);
         if (cpu_pins & Z80_RD) {
-            Z80_SET_DATA(cpu_pins, mem_rd(&sys->mem, addr));
-            logRead(addr, Z80_GET_DATA(pins));
+            Z80_SET_DATA(cpu_pins, mem_rd(&sys	->mem, addr));
+            logRead(addr, Z80_GET_DATA(cpu_pins));
         }
         else if (cpu_pins & Z80_WR) {
             mem_wr(&sys->mem, addr, Z80_GET_DATA(cpu_pins));
-            logWrite(addr, Z80_GET_DATA(pins));
+            logWrite(addr, Z80_GET_DATA(cpu_pins));
         }
     }
     else if ((cpu_pins & Z80_IORQ) && (cpu_pins & (Z80_RD|Z80_WR))) {
-        if (cpu_pins & Z80_RD) logIORead(Z80_GET_ADDR(pins), Z80_GET_DATA(pins));
-        if (cpu_pins & Z80_WR) logIOWrite(Z80_GET_ADDR(pins), Z80_GET_DATA(pins));
+        if (cpu_pins & Z80_RD) logIORead(Z80_GET_ADDR(cpu_pins), Z80_GET_DATA(cpu_pins));
+        if (cpu_pins & Z80_WR) logIOWrite(Z80_GET_ADDR(cpu_pins), Z80_GET_DATA(cpu_pins));
         /* CPU IO address decoding
 
             For address decoding, see the main board schematics!

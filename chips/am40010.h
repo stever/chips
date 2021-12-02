@@ -527,7 +527,6 @@ static void _am40010_crt_tick(am40010_t* ga, bool sync) {
         else if (crt->v_pos == 312) {
             /* no vsync on this frame */
             new_frame = true;
-            logNewFrame();
         }
         if (crt->v_retrace > 0) {
             crt->v_retrace--;
@@ -538,6 +537,7 @@ static void _am40010_crt_tick(am40010_t* ga, bool sync) {
     }
     if (new_frame) {
         crt->v_pos = 0;
+        logNewFrame();
     }
 
     /* compute visible beam state */

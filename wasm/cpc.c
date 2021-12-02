@@ -42,6 +42,8 @@ void machine_hardreset(cpc_t* sys) {
     cpc_desc_t desc;
     memset(sys, 0, sizeof(cpc_t));
     memset(&desc, 0, sizeof(cpc_desc_t));
+    desc.type = CPC_TYPE_6128; //CPC_TYPE_464;
+    desc.joystick_type = CPC_JOYSTICK_NONE; // DIGITAL;
     desc.pixel_buffer_size = _AM40010_MAX_FB_SIZE; //cpc_max_display_size();
     desc.pixel_buffer = pixel_buffer = malloc(desc.pixel_buffer_size);
     desc.rom_464_os = &bios_array[0x0];
@@ -158,8 +160,8 @@ void machine_key_up(cpc_t* sys, int key_code) {
     cpc_key_up(sys, key_code);
 }
 
-void machine_load_rom(cpc_t* sys, const uint8_t* ptr, int num_bytes) {
-    cpc_quickload(sys, ptr, num_bytes);
+bool machine_load_rom(cpc_t* sys, const uint8_t* ptr, int num_bytes) {
+    return cpc_quickload(sys, ptr, num_bytes);
 }
 
 unsigned int machine_cpu_get_pc(cpc_t* sys) {
@@ -173,3 +175,8 @@ unsigned int machine_cpu_get_sp(cpc_t* sys) {
 bool machine_cpu_is_stable(cpc_t* sys) {
     return z80_opdone(&sys->cpu);
 }
+
+int machine_get_raster_line(cpc_t* sys) {
+    return sys->ga.crt.v_pos;
+}
+
