@@ -21,3 +21,6 @@ wasm/%.wasm: wasm/%.c systems/*.h chips/*.h wasm/probe.h
 	-Wl,--lto-O2 \
 	-o $@ \
 	$<
+
+clean:
+	rm wasm/zx.wasm
