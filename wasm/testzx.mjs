@@ -1,4 +1,3 @@
-
 import * as zx from './zx.wasm';
 console.log(zx)
 zx.memory.grow(32);
@@ -41,4 +40,3 @@ const pixels = new Uint8Array(
 );
 
 fs.writeFileSync('testzx.rgba', pixels);
-
