@@ -139,10 +139,10 @@ void machine_key_up(zx_t* sys, int key_code) {
 }
 
 void machine_load_rom(zx_t* sys, const uint8_t* ptr, int num_bytes) {
-    // all 48K, start at $5ccb-$ff57
-    if (num_bytes == 41613) {
-        memcpy(&sys->ram[0][0x5ccb-0x4000], ptr, 41613);
-        z80_set_pc(&sys->cpu, 0x5ccb);
+    // all 48K, start at $8000-$ff57
+    if (num_bytes == 32600) {
+        memcpy(&sys->ram[0][0x8000-0x4000], ptr, 32600);
+        z80_set_pc(&sys->cpu, 0x8000);
         z80_set_sp(&sys->cpu, 0xff58);
     } else {
         zx_quickload(sys, ptr, num_bytes);
