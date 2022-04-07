@@ -9,52 +9,9 @@ are easy to embed into bigger applications.
 
 ## Emulated systems:
 
-- **z1013.h**: the Robotron Z1013 in the following variants:
-    - *Z1013.01*: the original Z1013 with 1 MHz Z80 CPU, 16 KB RAM, "old" operating system ROM and 8x4 keyboard matrix with 4 shift keys
-    - *Z1013.16*: the modernised Z1013 with 2 MHz CPU, 16 KB RAM, "new" operating system ROM and an 8x8 keyboard matrix for 'industry standard' keyboards
-    - *Z1013.64*: same as the Z1013.16 model, but with 64 KByte RAM
-- **z9001.h**: the Robotron Z9001 aka KC85/1 in 2 versions:
-    - *Z9001*: the original Z9001 which was later renamed to KC85/1 with black-and-white display, a 16 KByte RAM extension (for 32 KByte RAM overall), and an optional BASIC module
-    - *KC87*: the improved KC87 with color module, 48 KByte RAM and builtin BASIC ROM
 - **zx.h**: the ZX Spectrum in 2 variants:
     - *ZX Spectrum 48k*: 48 KB RAM and beeper sound
     - *ZX Spectrum 128*: the improved Spectrum with 128 KB RAM and an additional AY-3-8912 sound chip
-- **cpc.h**: the Amstrad CPC in 3 variants:
-    - *CPC 464*: the original 64 KByte Amstrad CPC
-    - *CPC 6128*: the improved CPC with 128 KB RAM
-    - *KC Compact*: an East German CPC clone (the emulator only differs in color palette and ROM, it doesn't emulate the gate-array 'hardware-emulation' in the KC Compact
-- **atom.h**: an *Acorn Atom* with modern extensions (32 KB RAM + 8 KB video memory, a rudimentary VIA 6522 emulation and MMC joystick support)
-- **c64.h**: a *C64* emulator with PAL display
-    - Wolfgang Lorenz test suite status (non-CPU stuff):
-        - branchwrap: OK
-        - cia1pb6: OK
-        - cia1pb7: OK
-        - cia1tab: OK
-        - cia1tb123: OK
-        - cia2pb6: OK
-        - cia2pb7: OK
-        - cia1ta/b,cia2ta/b: FAIL (mentioned as 'under construction' in TestSuite2.15 readme)
-        - cia2tb123: OK
-        - cntdef: OK
-        - cnto2: OK
-        - cpuport: OK
-        - cputiming: OK
-        - flipos: OK
-        - icr01: OK
-        - imr: OK
-        - loadth: OK
-        - mmu: OK
-        - mmufetch: OK
-        - irq: FAIL
-        - nmi: FAIL
-        - oneshot: OK
-        - trap1..17: OK
-
-
-- (TODO) **kc85.h**: an emulator for 3 KC85 models from VEB Mikroelektronik Mühlhausen:
-    - *KC85/2*: the original KC85 model with 16 KB RAM, CAOS 2.2 and no integrated BASIC
-    - *KC85/3*: an incremental improvement with CAOS 3.1 and integrated BASIC ROM
-    - *KC85/4*: a vastly improved model with 128 KB RAM, higher color resolution and double buffered display 
 
 The accuracy of emulation differs quite a bit, please refer to the embedded documentation
 in the header files for details.

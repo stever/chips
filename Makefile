@@ -1,7 +1,8 @@
-
 CLANG="$(EMSDK)/upstream/bin/clang"
 
-testall: c64.test zx.test cpc.test
+all: wasm/zx.wasm
+
+test: zx.test
 
 %.test: wasm/%.wasm
 	node --experimental-modules --experimental-wasm-modules wasm/test$*.mjs
@@ -21,3 +22,5 @@ wasm/%.wasm: wasm/%.c systems/*.h chips/*.h wasm/probe.h
 	-o $@ \
 	$<
 
+clean:
+	rm wasm/zx.wasm
